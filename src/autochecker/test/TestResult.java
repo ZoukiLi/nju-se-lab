@@ -8,21 +8,18 @@ import java.util.List;
  */
 public class TestResult {
     private final TestBatch _test;
-    private final List<String> _results;
-    private final List<Boolean> _overTime;
+    private final List<TestRunningRecord> _results;
 
     /**
      * Create a new TestResult.
-     * @param test the test that was run.
+     * @param test the test.
      * @param results the results of the test.
-     * @param overTime whether the test took too long.
      */
-    public TestResult(TestBatch test, List<String> results, List<Boolean> overTime) {
+    public TestResult(TestBatch test, List<TestRunningRecord> results) {
         _test = test;
         _results = results;
-        _overTime = overTime;
     }
-
+    
     /**
      * Get the test that was run.
      * @return the test that was run.
@@ -35,15 +32,7 @@ public class TestResult {
      * Get the results of the test.
      * @return the results of the test.
      */
-    public List<String> getResults() {
+    public List<TestRunningRecord> getResults() {
         return _results;
-    }
-
-    /**
-     * Get whether the test took too long.
-     * @return whether the test took too long.
-     */
-    public List<Boolean> getOverTime() {
-        return _overTime;
     }
 }
