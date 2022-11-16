@@ -84,7 +84,7 @@ public class TestGenerator {
      * @return the batch of test cases.
      */
     public TestBatch generateTests() {
-        List<String> tests = new ArrayList();
+        List<String> tests = new ArrayList<>();
         for (int i = 0; i < _batch_size; i++) {
             tests.add(generateOneTest());
         }

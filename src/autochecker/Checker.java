@@ -38,22 +38,19 @@ public class Checker {
      * Compiles all the programs and compares them to each other.
      * Saves the results of the comparisons.
      */
-    public void check() {
+    public void check(long timeout) {
         // compile all programs
         _programs.forEach(Program::compile);
         // generate a test batch
         _testBatch = _testGenerator.generateTests();
         // run the test batch on all programs
-        _programs.forEach(p -> p.runTests(_testBatch));
+        _programs.forEach(p -> p.runTests(_testBatch, timeout));
         // compare all programs
-        for (int i = 0; i < _programs.size(); i++) {
-            for (int j = i + 1; j < _programs.size(); j++) {
-                Program p1 = _programs.get(i);
-                Program p2 = _programs.get(j);
-                ComparisonResult result = p1.compare(p2);
-                _comparisons.add(new Comparison(p1, p2, result));
-            }
-        }
+        _programs.forEach(p1 -> { _programs.subList(_programs.indexOf(p1) + 1, _programs.size()).forEach(p2 -> {
+                Comparison comparison = new Comparison(p1, p2, p1.compare(p2));
+                _comparisons.add(comparison);
+            });
+        });
     }
 
     /**

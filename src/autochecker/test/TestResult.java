@@ -19,7 +19,7 @@ public class TestResult {
         _test = test;
         _results = results;
     }
-    
+
     /**
      * Get the test that was run.
      * @return the test that was run.
