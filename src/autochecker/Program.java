@@ -20,11 +20,19 @@ public class Program {
     private TestResult _testResult;
     private String _executablePath;
 
+    /**
+     * Create a new Program.
+     * @param srcReader the srcReader of the program.
+     */
     public Program(SrcReader srcReader) {
         this.srcReader = srcReader;
         this._hasCompiled = false;
     }
 
+    /**
+     * Compile the program.
+     * use temp folder to store the executable file.
+     */
     public void compile() {
         if (this._hasCompiled) {
             return;
@@ -46,10 +54,19 @@ public class Program {
         }
     }
 
+    /**
+     * get the original src file path.
+     * @return the original src file path.
+     */
     public String getPath() {
         return this.srcReader.getPath();
     }
 
+    /**
+     * Run the program with the given test.
+     * @param testBatch the test to run.
+     * @param timeout the timeout for the test, in milliseconds.
+     */
     public void runTests(TestBatch testBatch, long timeout) {
         if (!this._hasCompiled) {
             this.compile();
@@ -75,6 +92,11 @@ public class Program {
         _testResult = new TestResult(testBatch, records);
     }
 
+    /**
+     * Compare the test result with the given test result.
+     * @param other the test result to compare with.
+     * @return CompareResult of the comparison.
+     */
     public ComparisonResult compare(Program other) {
         if (!this._hasCompiled || !other._hasCompiled) {
             return ComparisonResult.UNKNOWN;
