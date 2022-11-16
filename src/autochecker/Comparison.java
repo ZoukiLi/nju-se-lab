@@ -1,5 +1,9 @@
 package autochecker;
 
+/**
+ * A comparison between two programs.
+ * Includes the two programs and the result of the comparison.
+ */
 public class Comparison {
 
     private final Program _program1;
