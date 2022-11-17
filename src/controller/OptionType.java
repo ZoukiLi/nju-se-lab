@@ -8,4 +8,5 @@ public enum OptionType {
     LONG,
     INT,
     STRING,
+    NONE,
 }

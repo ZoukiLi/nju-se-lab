@@ -22,6 +22,7 @@ public record Option(char shortName, String longName, OptionType type) {
             case STRING -> arg;
             case INT -> Integer.parseInt(arg);
             case LONG -> Long.parseLong(arg);
+            case NONE -> true;
         };
     }
 }
