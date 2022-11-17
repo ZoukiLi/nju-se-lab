@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract class SrcReader {
-    public abstract String read();
+    public abstract String read() throws IOException;
     public abstract String getPath();
 
     private SrcReaderType type;
@@ -25,7 +25,14 @@ public abstract class SrcReader {
     }
 
     @NotNull
-    public static SrcReader fromPath(String path, SrcReaderType type) {
-        return null;
+    public static SrcReader fromPath(String path, @NotNull SrcReaderType type) {
+        switch (type) {
+            case LOCAL_FILE -> {
+                SrcReader reader = new LocalFileReader(path);
+                reader.type = type;
+                return reader;
+            }
+            default -> throw new IllegalArgumentException("Unknown SrcReaderType");
+        }
     }
 }

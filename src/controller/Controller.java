@@ -34,8 +34,8 @@ public class Controller {
         Path inputPath = Path.of(inputDir);
         // get all src files in input directory
         List<String> srcPaths;
-        try {
-            srcPaths = Files.walk(inputPath)
+        try (var stream = Files.walk(inputPath)) {
+            srcPaths = stream
                     .filter(Files::isRegularFile)
                     .filter(path -> path.endsWith(".c") || path.endsWith(".cpp"))
                     .map(Path::toString)
