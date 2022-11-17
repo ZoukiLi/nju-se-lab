@@ -34,6 +34,8 @@ public class CSVPairWriter extends ComparisonWriter {
         inequal = inequal.substring(0, inequal.length() - 1);
         try {
             Files.createDirectories(_out_dir);
+            Files.deleteIfExists(eq_path);
+            Files.deleteIfExists(ineq_path);
             Files.writeString(eq_path, equal, StandardOpenOption.CREATE);
             Files.writeString(ineq_path, inequal, StandardOpenOption.CREATE);
         } catch (IOException e) {
