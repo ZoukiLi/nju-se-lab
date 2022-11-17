@@ -12,4 +12,11 @@ public record Comparison (Program program1, Program program2, ComparisonResult r
     public String toString() {
         return program1.getPath() + "," + program2.getPath();
     }
+
+    /**
+     * @return is SAME.
+     */
+    public boolean isSame() {
+        return result == ComparisonResult.SAME;
+    }
 }

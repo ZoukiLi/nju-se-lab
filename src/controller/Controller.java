@@ -47,7 +47,7 @@ public class Controller {
         // read stdin_fmt.txt
         String stdinFmt;
         try {
-            stdinFmt = Files.readString(inputPath.resolve("stdin_fmt.txt"));
+            stdinFmt = Files.readString(inputPath.resolve("stdin_format.txt"));
         } catch (IOException e) {
             System.err.println("Error when reading stdin_fmt.txt");
             return;
