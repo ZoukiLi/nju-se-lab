@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Main-Class: Main
+
+Implementation-Title: nju-se-lab
+Implementation-Version: 0.1.0
+Implementation-Vendor: zoukiri
+Specification-Title: nju-se-lab
+Specification-Version: 0.1.0
+Specification-Vendor: zoukiri
+
