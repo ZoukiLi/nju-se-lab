@@ -1,7 +1,7 @@
 package autochecker.test;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -50,32 +50,23 @@ public class TestGenerator {
         // int(a, b) - an integer between a and b (inclusive)
         // string(a, b) - a string of length between a and b (inclusive)
         // char - a single a-zA-Z character
-        String[] lines = _fmt.split("\\r?\\n");
-        StringBuilder sb = new StringBuilder();
-
-        for (String line : lines) {
-            String[] types = line.split("\\s+");
-            for (String type : types) {
+        var sb = new StringBuilder();
+        Arrays.stream(_fmt.split("\\r?\\n")).forEach(line -> {
+            Arrays.stream(line.split("\\s+")).forEach(type -> {
                 if (type.equals("char")) {
                     sb.append(randomAlpha());
                 } else {
-                    int start = type.indexOf('(');
-                    int end = type.indexOf(')');
-                    String[] args = type.substring(start + 1, end).split(",");
-                    int a = Integer.parseInt(args[0]);
-                    int b = Integer.parseInt(args[1]);
-                    if (type.startsWith("int")) {
-                        sb.append(randomIntRange(a, b));
-                    } else if (type.startsWith("string")) {
-                        sb.append(randomString(a, b));
-                    } else {
-                        throw new RuntimeException("Unknown type: " + type);
+                    var parts = type.split("[(),]\\s*");
+                    if (parts[0].equals("int")) {
+                        sb.append(randomIntRange(Integer.parseInt(parts[1]), Integer.parseInt(parts[2])));
+                    } else if (parts[0].equals("string")) {
+                        sb.append(randomString(Integer.parseInt(parts[1]), Integer.parseInt(parts[2])));
                     }
                 }
-                sb.append(' ');
-            }
-            sb.append('\n');
-        }
+                sb.append(" ");
+            });
+            sb.append("\n");
+        });
         return sb.toString();
     }
 
@@ -84,7 +75,7 @@ public class TestGenerator {
      * @return the batch of test cases.
      */
     public TestBatch generateTests() {
-        List<String> tests = new ArrayList<>();
+        var tests = new ArrayList<String>();
         for (int i = 0; i < _batch_size; i++) {
             tests.add(generateOneTest());
         }

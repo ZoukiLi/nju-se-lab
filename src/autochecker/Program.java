@@ -7,7 +7,6 @@ import src_reader.SrcReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 
 /**
@@ -46,8 +45,8 @@ public class Program {
         // use outside compiler to compile the src file
         _executablePath = srcTempPath.replaceAll("\\.c(pp)?$", "");
         try {
-            ProcessBuilder pb = new ProcessBuilder("g++", "-o", _executablePath, srcTempPath);
-            Process compileProcess = pb.start();
+            var pb = new ProcessBuilder("g++", "-o", _executablePath, srcTempPath);
+            var compileProcess = pb.start();
             compileProcess.waitFor();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error when compiling src file");
@@ -72,11 +71,11 @@ public class Program {
             this.compile();
         }
         // run the executable with the test batch
-        List<TestRunningRecord> records = new ArrayList<>();
-        testBatch.getTests().forEach(t -> {
+        var records = new ArrayList<TestRunningRecord>();
+        testBatch.tests().forEach(t -> {
             try {
-                ProcessBuilder pb = new ProcessBuilder(_executablePath);
-                Process runProcess = pb.start();
+                var pb = new ProcessBuilder(_executablePath);
+                var runProcess = pb.start();
                 runProcess.getOutputStream().write(t.getBytes());
                 boolean inTime = runProcess.waitFor(timeout, java.util.concurrent.TimeUnit.MILLISECONDS);
                 if (!inTime) {
@@ -106,12 +105,12 @@ public class Program {
         if (this._testResult == null || other._testResult == null) {
             return ComparisonResult.UNKNOWN;
         }
-        if (this._testResult.getTest() != other._testResult.getTest()) {
+        if (this._testResult.test() != other._testResult.test()) {
             return ComparisonResult.UNKNOWN;
         }
 
-        List<TestRunningRecord> r1 = this._testResult.getResults();
-        List<TestRunningRecord> r2 = other._testResult.getResults();
+        var r1 = this._testResult.results();
+        var r2 = other._testResult.results();
         int diff_num = IntStream.range(0, r1.size()).map(i -> r1.get(1).CompareTo(r2.get(i)) ? 0 : 1).sum();
         return diff_num == 0 ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
     }
