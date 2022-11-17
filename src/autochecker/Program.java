@@ -81,8 +81,9 @@ public class Program {
             try {
                 var pb = new ProcessBuilder(_executablePath);
                 var runProcess = pb.start();
-                runProcess.getOutputStream().write(t.getBytes());
-                runProcess.getOutputStream().flush();
+                var stdin = runProcess.getOutputStream();
+                stdin.write(t.getBytes());
+                stdin.close();
                 boolean inTime = runProcess.waitFor(timeout, java.util.concurrent.TimeUnit.MILLISECONDS);
                 if (!inTime) {
                     runProcess.destroy();
@@ -92,10 +93,8 @@ public class Program {
                 byte[] stdout = runProcess.getInputStream().readAllBytes();
                 byte[] stderr = runProcess.getErrorStream().readAllBytes();
                 records.add(new TestRunningRecord(new String(stdout), new String(stderr), false));
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 records.add(new TestRunningRecord("", "", true));
-            } catch (IOException e) {
-                throw new RuntimeException("Error when reading test output");
             }
         });
         _testResult = new TestResult(testBatch, records);
