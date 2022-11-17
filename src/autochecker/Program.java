@@ -85,8 +85,10 @@ public class Program {
                 byte[] stdout = runProcess.getInputStream().readAllBytes();
                 byte[] stderr = runProcess.getErrorStream().readAllBytes();
                 records.add(new TestRunningRecord(new String(stdout), new String(stderr), inTime));
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Error when running executable");
+            } catch (InterruptedException e) {
+                records.add(new TestRunningRecord("", "", false));
+            } catch (IOException e) {
+                throw new RuntimeException("Error when reading test output");
             }
         });
         _testResult = new TestResult(testBatch, records);

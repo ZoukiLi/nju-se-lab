@@ -46,7 +46,8 @@ public class Checker {
         // run the test batch on all programs
         _programs.forEach(p -> p.runTests(_testBatch, timeout));
         // compare all programs
-        _programs.forEach(p1 -> { _programs.subList(_programs.indexOf(p1) + 1, _programs.size()).forEach(p2 -> {
+        _programs.forEach(p1 -> {
+            _programs.stream().skip(_programs.indexOf(p1)).forEach(p2 -> {
                 _comparisons.add(new Comparison(p1, p2, p1.compare(p2)));
             });
         });
