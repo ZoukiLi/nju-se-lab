@@ -9,12 +9,14 @@ public abstract class ComparisonWriter {
     public abstract void write(List<Comparison> comparisons);
     public abstract List<String> getPath();
 
-    private ComparisonWriterType type;
+    protected ComparisonWriterType _type;
     public ComparisonWriterType getType() {
-        return type;
+        return _type;
     }
     @NotNull
     public static ComparisonWriter fromOutDir(String outDir, ComparisonWriterType type) {
-        return null;
+        return switch (type) {
+            case CSV_PAIR -> new CSVPairWriter(outDir) {{_type = type;}};
+        };
     }
 }
