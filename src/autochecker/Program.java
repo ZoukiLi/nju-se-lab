@@ -6,6 +6,8 @@ import autochecker.test.TestRunningRecord;
 import src_reader.SrcReader;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -15,7 +17,7 @@ import java.util.stream.IntStream;
 public class Program {
 
     private final SrcReader srcReader;
-    private final boolean _hasCompiled;
+    private boolean _hasCompiled;
     private TestResult _testResult;
     private String _executablePath;
 
@@ -38,7 +40,9 @@ public class Program {
         }
         String srcTempPath;
         try {
-            srcTempPath = this.srcReader.getTempCopyPath("auto-checker");
+            Path tmpDir = Path.of(System.getProperty("java.io.tmpdir"), "autochecker");
+            Files.createDirectories(tmpDir);
+            srcTempPath = this.srcReader.getTempCopyPath(tmpDir, "auto-checker");
         } catch (IOException e) {
             throw new RuntimeException("Error when creating temp copy of src file");
         }
@@ -51,6 +55,7 @@ public class Program {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error when compiling src file");
         }
+        this._hasCompiled = true;
     }
 
     /**
@@ -77,15 +82,18 @@ public class Program {
                 var pb = new ProcessBuilder(_executablePath);
                 var runProcess = pb.start();
                 runProcess.getOutputStream().write(t.getBytes());
+                runProcess.getOutputStream().flush();
                 boolean inTime = runProcess.waitFor(timeout, java.util.concurrent.TimeUnit.MILLISECONDS);
                 if (!inTime) {
                     runProcess.destroy();
+                    records.add(new TestRunningRecord("", "", true));
+                    return;
                 }
                 byte[] stdout = runProcess.getInputStream().readAllBytes();
                 byte[] stderr = runProcess.getErrorStream().readAllBytes();
-                records.add(new TestRunningRecord(new String(stdout), new String(stderr), inTime));
+                records.add(new TestRunningRecord(new String(stdout), new String(stderr), false));
             } catch (InterruptedException e) {
-                records.add(new TestRunningRecord("", "", false));
+                records.add(new TestRunningRecord("", "", true));
             } catch (IOException e) {
                 throw new RuntimeException("Error when reading test output");
             }
@@ -111,7 +119,8 @@ public class Program {
 
         var r1 = this._testResult.results();
         var r2 = other._testResult.results();
-        int diff_num = IntStream.range(0, r1.size()).map(i -> r1.get(1).CompareTo(r2.get(i)) ? 0 : 1).sum();
-        return diff_num == 0 ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
+        return IntStream.range(0, r1.size())
+                .mapToObj(i -> r1.get(i).CompareTo(r2.get(i)))
+                .reduce(true, (a, b) -> a && b) ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
     }
 }

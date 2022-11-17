@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +23,19 @@ public class CSVPairWriter extends ComparisonWriter {
     }
     @Override
     public void write(@NotNull List<Comparison> comparisons) {
-        var equal = comparisons.stream().filter(Comparison::isSame)
+        var eq_path = Path.of(_paths.get(0));
+        var ineq_path = Path.of(_paths.get(1));
+
+        var equal = "file1,file2\n" + comparisons.stream().filter(Comparison::isSame)
                 .map(cmp -> cmp + "\n").reduce("", String::concat);
-        var inequal = comparisons.stream().filter(cmp -> !cmp.isSame())
+        equal = equal.substring(0, equal.length() - 1);
+        var inequal = "file1,file2\n" + comparisons.stream().filter(cmp -> !cmp.isSame())
                 .map(cmp -> cmp + "\n").reduce("", String::concat);
+        inequal = inequal.substring(0, inequal.length() - 1);
         try {
-            Files.writeString(Path.of(_paths.get(0)), equal);
-            Files.writeString(Path.of(_paths.get(1)), inequal);
+            Files.createDirectories(_out_dir);
+            Files.writeString(eq_path, equal, StandardOpenOption.CREATE);
+            Files.writeString(ineq_path, inequal, StandardOpenOption.CREATE);
         } catch (IOException e) {
             throw new RuntimeException("Error when writing to csv file");
         }

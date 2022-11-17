@@ -37,8 +37,8 @@ public class Controller {
         try (var stream = Files.walk(inputPath)) {
             srcPaths = stream
                     .filter(Files::isRegularFile)
-                    .filter(path -> path.endsWith(".c") || path.endsWith(".cpp"))
                     .map(Path::toString)
+                    .filter(path -> path.endsWith(".c") || path.endsWith(".cpp"))
                     .toList();
         } catch (IOException e) {
             System.err.println("Error when reading input directory");
@@ -49,7 +49,7 @@ public class Controller {
         try {
             stdinFmt = Files.readString(inputPath.resolve("stdin_format.txt"));
         } catch (IOException e) {
-            System.err.println("Error when reading stdin_fmt.txt");
+            System.err.println("Error when reading stdin_format.txt");
             return;
         }
         // create checker

@@ -63,9 +63,10 @@ public class TestGenerator {
                         sb.append(randomString(Integer.parseInt(parts[1]), Integer.parseInt(parts[2])));
                     }
                 }
-                sb.append(" ");
+                sb.append(' ');
             });
-            sb.append("\n");
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append('\n');
         });
         return sb.toString();
     }

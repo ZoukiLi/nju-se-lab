@@ -11,12 +11,12 @@ public abstract class SrcReader {
     public abstract String read() throws IOException;
     public abstract String getPath();
 
-    private SrcReaderType type;
+    protected SrcReaderType _type;
     public SrcReaderType getType() {
-        return type;
+        return _type;
     }
-    public String getTempCopyPath(String prefix) throws IOException {
-        Path tempDir = Files.createTempDirectory(prefix +"-src");
+    public String getTempCopyPath(Path path, String prefix) throws IOException {
+        Path tempDir = Files.createTempDirectory(path, prefix +"-src-");
         Path filePath = Path.of(getPath());
         Path tempFilePath = tempDir.resolve(filePath.getFileName());
         //copy the file to the temp dir
@@ -26,13 +26,9 @@ public abstract class SrcReader {
 
     @NotNull
     public static SrcReader fromPath(String path, @NotNull SrcReaderType type) {
-        switch (type) {
-            case LOCAL_FILE -> {
-                SrcReader reader = new LocalFileReader(path);
-                reader.type = type;
-                return reader;
-            }
+        return switch (type) {
+            case LOCAL_FILE -> new LocalFileReader(path){ {_type = type;} };
             default -> throw new IllegalArgumentException("Unknown SrcReaderType");
-        }
+        };
     }
 }

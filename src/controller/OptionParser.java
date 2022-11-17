@@ -75,7 +75,7 @@ public class OptionParser {
         Map<Option, Object> parsed = new HashMap<>();
         List<String> argsList = Arrays.asList(args);
         try {
-            argsList.stream().skip(1).filter(arg -> arg.startsWith("-")).forEach(arg -> {
+            argsList.stream().filter(arg -> arg.startsWith("-")).forEach(arg -> {
                 Arrays.stream(options).filter(opt -> opt.match(arg)).forEach(opt -> {
                             int i = argsList.indexOf(arg);
                             if (i == argsList.size() - 1) {
