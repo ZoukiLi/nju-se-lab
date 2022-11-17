@@ -27,7 +27,7 @@ public class Checker {
      */
     public Checker(List<String> src_paths, String fmt, int batch_size, long seed) {
         // create a Program for each src file
-        List<SrcReader> readers = src_paths.stream().map(p -> SrcReader.fromPath(p, SrcReaderType.LOCAL_FILE)).toList();
+        var readers = src_paths.stream().map(p -> SrcReader.fromPath(p, SrcReaderType.LOCAL_FILE)).toList();
         _programs = readers.stream().map(Program::new).toList();
         // create a TestGenerator
         _testGenerator = new TestGenerator(fmt, batch_size, seed);
@@ -46,7 +46,7 @@ public class Checker {
         // run the test batch on all programs
         _programs.forEach(p -> p.runTests(_testBatch, timeout));
         // compare all programs
-        _programs.forEach(p1 -> 
+        _programs.forEach(p1 ->
                 _programs.stream().skip(_programs.indexOf(p1)).forEach(p2 ->
                         _comparisons.add(new Comparison(p1, p2, p1.compare(p2)))));
     }
