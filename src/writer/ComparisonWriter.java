@@ -1,6 +1,8 @@
 package writer;
 
 import autochecker.Comparison;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public abstract class ComparisonWriter {
@@ -11,6 +13,7 @@ public abstract class ComparisonWriter {
     public ComparisonWriterType getType() {
         return type;
     }
+    @NotNull
     public static ComparisonWriter fromOutDir(String outDir, ComparisonWriterType type) {
         return null;
     }
