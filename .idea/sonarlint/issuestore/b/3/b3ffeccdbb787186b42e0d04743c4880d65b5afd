@@ -1,0 +1,12 @@
+
+[	java:S112/"FDefine and throw a dedicated exception instead of using a generic one.(ÌÀÕ¸
+[	java:S1128"FDefine and throw a dedicated exception instead of using a generic one.(ˆÍñì
+L
+java:S5411y"*Use the primitive boolean expression here.(ï›Û©ÿÿÿÿÿ8®ˆÁÌ0
+l	java:S116"WRename this field "_hasCompiled" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘ì¶Ê
+k	java:S116"VRename this field "_testResult" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ó©¸˜
+t	java:S116"ZRename this field "_executablePath" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´Ê¹òûÿÿÿÿ
+t
+java:S21427"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ò¶È
+y
+java:S2142`"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(üÍ”ûÿÿÿÿ
