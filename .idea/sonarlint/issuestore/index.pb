@@ -23,8 +23,6 @@ L
 src/autochecker/Program.java,b/3/b3ffeccdbb787186b42e0d04743c4880d65b5afd
 N
 src/controller/OptionType.java,d/d/ddea8fdd316f7b98547937820860437acf7453b0
-?
-settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 =
 src/Main.java,9/2/924f089edb4af5ee45c8a9d1129cd28e2b368138
 \
