@@ -2,6 +2,7 @@ package edu.nju.selab.controller;
 
 import edu.nju.selab.autochecker.Checker;
 import edu.nju.selab.autochecker.Comparison;
+import edu.nju.selab.handler.FrontHandler;
 import org.jetbrains.annotations.Unmodifiable;
 import edu.nju.selab.writer.ComparisonWriter;
 import edu.nju.selab.writer.ComparisonWriterType;
@@ -82,5 +83,8 @@ public class Controller {
         // write results to output directory
         var writer = ComparisonWriter.fromOutDir(outputDir, ComparisonWriterType.CSV_PAIR);
         writer.write(cmpResults);
+
+        // start web server
+        var handler = new FrontHandler(cmpResults);
     }
 }

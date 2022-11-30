@@ -1,11 +1,0 @@
-
-k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä³ØÜşÿÿÿÿ
-k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä³ØÜşÿÿÿÿ
-[
-java:S21842"@Cast one of the operands of this addition operation to a "long".(òììáúÿÿÿÿ
-n	java:S116"TRename this field "_programs" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨üÊ¼şÿÿÿÿ
-s	java:S116"YRename this field "_testGenerator" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€ˆˆøÿÿÿÿ
-j	java:S116"URename this field "_testBatch" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÄÔ‰
-q	java:S116"WRename this field "_comparisons" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËğÍüÿÿÿÿ
-o
-java:S1450"YRemove the "_testBatch" field and declare it as a local variable in the relevant methods.(ŒÄÔ‰
