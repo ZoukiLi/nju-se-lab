@@ -67,6 +67,14 @@ public class Program {
     }
 
     /**
+     * get the src file content.
+     * @return the src file content.
+     */
+    public String read() throws IOException {
+        return this.srcReader.read();
+    }
+
+    /**
      * Run the program with the given test.
      * @param testBatch the test to run.
      * @param timeout the timeout for the test, in milliseconds.
