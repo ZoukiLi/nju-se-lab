@@ -16,28 +16,47 @@ public class CSVPairWriter extends ComparisonWriter {
 
     public CSVPairWriter(String outDir) {
         _out_dir = Path.of(outDir);
-        _paths = new ArrayList<>() { {
-            add(_out_dir.resolve("equal.csv").toString());
-            add(_out_dir.resolve("inequal.csv").toString());
-        } };
+        _paths = new ArrayList<>();
+
+        _paths.add(_out_dir.resolve("equal.csv").toString());
+        _paths.add(_out_dir.resolve("inequal.csv").toString());
+        _paths.add(_out_dir.resolve("unknown.csv").toString());
     }
     @Override
     public void write(@NotNull List<Comparison> comparisons) {
         var eq_path = Path.of(_paths.get(0));
         var ineq_path = Path.of(_paths.get(1));
+        var unk_path = Path.of(_paths.get(2));
+        final var header = "file1,file2\n";
 
-        var equal = "file1,file2\n" + comparisons.stream().filter(Comparison::isSame)
-                .map(cmp -> cmp + "\n").reduce("", String::concat);
-        equal = equal.substring(0, equal.length() - 1);
-        var inequal = "file1,file2\n" + comparisons.stream().filter(cmp -> !cmp.isSame())
-                .map(cmp -> cmp + "\n").reduce("", String::concat);
-        inequal = inequal.substring(0, inequal.length() - 1);
+        var equal = new StringBuilder(header);
+        var inequal = new StringBuilder(header);
+        var unknown = new StringBuilder(header);
+
+        for (var comp : comparisons) {
+            if (comp == null) {
+                continue;
+            }
+            if (comp.isSame()) {
+                equal.append(comp.toString()).append("\n");
+            } else if (comp.isDifferent()) {
+                inequal.append(comp.toString()).append("\n");
+            } else {
+                unknown.append(comp.toString()).append("\n");
+            }
+        }
+        equal.deleteCharAt(equal.length() - 1);
+        inequal.deleteCharAt(inequal.length() - 1);
+        unknown.deleteCharAt(unknown.length() - 1);
+
+
         try {
             Files.createDirectories(_out_dir);
             Files.deleteIfExists(eq_path);
             Files.deleteIfExists(ineq_path);
             Files.writeString(eq_path, equal, StandardOpenOption.CREATE);
             Files.writeString(ineq_path, inequal, StandardOpenOption.CREATE);
+            Files.writeString(unk_path, unknown, StandardOpenOption.CREATE);
         } catch (IOException e) {
             throw new RuntimeException("Error when writing to csv file");
         }

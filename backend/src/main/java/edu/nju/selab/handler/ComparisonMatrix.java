@@ -6,10 +6,7 @@ import edu.nju.selab.autochecker.Program;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public record ComparisonMatrix(Map<Program, Map<Program, Comparison>> matrix) {
     /**
@@ -49,7 +46,7 @@ public record ComparisonMatrix(Map<Program, Map<Program, Comparison>> matrix) {
         // for each two programs, there is only one comparison.
         return getPrograms().stream().flatMap(p1 ->
                 getPrograms().stream().skip(getPrograms().indexOf(p1) + 1L)
-                        .map(p2 -> matrix.get(p1).get(p2))).toList();
+                        .map(p2 -> matrix.get(p1).get(p2))).filter(Objects::nonNull).toList();
     }
 
     /**
@@ -67,35 +64,22 @@ public record ComparisonMatrix(Map<Program, Map<Program, Comparison>> matrix) {
      * @param p2 program 2.
      * @param equivalent true if equivalent, false if not equivalent.
      */
-    public void mark(@NotNull Program p1, @NotNull Program p2, boolean equivalent) {
+    public void mark(@NotNull Program p1, @NotNull Program p2, ComparisonResult equivalent) {
+        matrix.get(p1).get(p2).mark(equivalent);
+
         // if p1 and p2 are equivalent, then all programs equivalent to p1 are equivalent to p2.
         // if p1 and p2 are equivalent, then all programs equivalent to p2 are equivalent to p1.
-        if (equivalent) {
-            matrix.get(p1).values().stream().filter(Comparison::isSame).map(Comparison::program2)
-                    .forEach(p -> {
-                        matrix.get(p).get(p2).mark(ComparisonResult.SAME);
-                        matrix.get(p2).get(p).mark(ComparisonResult.SAME);
-                    });
-            matrix.get(p2).values().stream().filter(Comparison::isSame).map(Comparison::program2)
-                    .forEach(p -> {
-                        matrix.get(p).get(p1).mark(ComparisonResult.SAME);
-                        matrix.get(p1).get(p).mark(ComparisonResult.SAME);
-                    });
-        } else {
-            // if p1 and p2 are not equivalent, then all programs equivalent to p1 are not equivalent to p2.
-            // if p1 and p2 are not equivalent, then all programs equivalent to p2 are not equivalent to p1.
-            matrix.get(p1).values().stream().filter(Comparison::isSame).map(Comparison::program2)
-                    .forEach(p -> {
-                        matrix.get(p).get(p2).mark(ComparisonResult.DIFFERENT);
-                        matrix.get(p2).get(p).mark(ComparisonResult.DIFFERENT);
-                    });
-            matrix.get(p2).values().stream().filter(Comparison::isSame).map(Comparison::program2)
-                    .forEach(p -> {
-                        matrix.get(p).get(p1).mark(ComparisonResult.DIFFERENT);
-                        matrix.get(p1).get(p).mark(ComparisonResult.DIFFERENT);
-                    });
+        if (equivalent == ComparisonResult.SAME || equivalent == ComparisonResult.DIFFERENT) {
+            expandEquivalence(p2, p1, equivalent);
+            expandEquivalence(p1, p2, equivalent);
         }
+    }
 
-
+    private void expandEquivalence(@NotNull Program p1, @NotNull Program p2, ComparisonResult equivalent) {
+        matrix.get(p2).values().stream().filter(Comparison::isSame).map(Comparison::program2)
+                .filter(p -> !p.equals(p1)).forEach(p -> {
+                    matrix.get(p).get(p1).mark(equivalent);
+                    matrix.get(p1).get(p).mark(equivalent);
+                });
     }
 }

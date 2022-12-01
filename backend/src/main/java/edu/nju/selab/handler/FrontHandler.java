@@ -1,22 +1,20 @@
 package edu.nju.selab.handler;
 
-import edu.nju.selab.autochecker.Comparison;
+
+import edu.nju.selab.autochecker.ComparisonResult;
 import edu.nju.selab.autochecker.Program;
 import edu.nju.selab.controller.Controller;
 import edu.nju.selab.controller.OptionParser;
 import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,7 +31,14 @@ public class FrontHandler {
         body.forEach((k, v) -> {
             System.out.println(k + " " + v);
         });
+        if (!body.containsKey("manualResult"))
+            return new FrontComparisonRecord(matrix.unknownComparisons());
         var result = body.get("manualResult");
+        switch (result) {
+            case "same" -> matrix.mark(program1, program2, ComparisonResult.SAME);
+            case "different" -> matrix.mark(program1, program2, ComparisonResult.DIFFERENT);
+            case "notSure" -> matrix.mark(program1, program2, ComparisonResult.SKIP);
+        }
 
         // if matrix empty, return null.
         if (matrix.unknownComparisons().isEmpty()) {

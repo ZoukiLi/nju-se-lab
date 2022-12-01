@@ -17,4 +17,8 @@ public enum ComparisonResult {
      * unknown means the autochecker cannot decide.
      */
     UNKNOWN,
+    /**
+     * skip means the user does not want to compare this pair.
+     */
+    SKIP,
 }
