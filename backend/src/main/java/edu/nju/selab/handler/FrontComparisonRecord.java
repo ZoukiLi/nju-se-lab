@@ -1,8 +1,6 @@
 package edu.nju.selab.handler;
 
 import edu.nju.selab.autochecker.Comparison;
-import edu.nju.selab.autochecker.test.TestBatch;
-import edu.nju.selab.autochecker.test.TestResult;
 import edu.nju.selab.autochecker.test.TestRunningRecord;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +41,7 @@ public record FrontComparisonRecord(
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FrontComparisonRecord) {
-            FrontComparisonRecord other = (FrontComparisonRecord) obj;
+        if (obj instanceof FrontComparisonRecord other) {
             return leftCaption.equals(other.leftCaption) && rightCaption.equals(other.rightCaption);
         }
         return false;

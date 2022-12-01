@@ -1,6 +1,7 @@
 package edu.nju.selab.handler;
 
 import edu.nju.selab.autochecker.Comparison;
+import edu.nju.selab.autochecker.Program;
 import edu.nju.selab.controller.Controller;
 import edu.nju.selab.controller.OptionParser;
 import jakarta.annotation.PostConstruct;
@@ -22,19 +23,26 @@ import java.util.Optional;
 @RestController
 public class FrontHandler {
     private final ApplicationContext context;
-    private List<Comparison> _comparisons;
-    private int _index = 0;
+    private ComparisonMatrix matrix;
+    private Controller controller;
+    private Program program1;
+    private Program program2;
 
     @PostMapping(value = "/api/nextComparison", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public FrontComparisonRecord nextComparison(@RequestBody @NotNull Map<String, String> body) {
         body.forEach((k, v) -> {
             System.out.println(k + " " + v);
         });
-        if (_index == _comparisons.size()) {
+        var result = body.get("manualResult");
+
+        // if matrix empty, return null.
+        if (matrix.unknownComparisons().isEmpty()) {
+            controller.writeResults(matrix.comparisons());
             return new FrontComparisonRecord(Optional.empty());
         }
-        var comparison = _comparisons.get(_index++);
-        return new FrontComparisonRecord(Optional.of(comparison));
+        program1 = matrix.unknownComparisons().get().program1();
+        program2 = matrix.unknownComparisons().get().program2();
+        return new FrontComparisonRecord(matrix.unknownComparisons());
     }
 
     public FrontHandler(ApplicationContext context) {
@@ -43,10 +51,9 @@ public class FrontHandler {
 
     @PostConstruct
     public void init() {
-        var parser = new OptionParser();
         var commandLineArgs = context.getBean(ApplicationArguments.class);
-        var records = parser.parse(commandLineArgs.getSourceArgs());
-        var controller = new Controller(records);
-        _comparisons = controller.run();
+        var records = new OptionParser().parse(commandLineArgs.getSourceArgs());
+        controller = new Controller(records);
+        matrix = new ComparisonMatrix(controller.run());
     }
 }
