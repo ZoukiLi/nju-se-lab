@@ -1,5 +1,0 @@
-
-f	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ªˆ†µ
-g	java:S116"RRename this field "_random" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(šØ¡–
-p	java:S116"VRename this field "_batch_size" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®º®üÿÿÿÿ
-d	java:S116"ORename this field "_fmt" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥¹ñø

@@ -2,6 +2,7 @@ package edu.nju.selab.controller;
 
 import edu.nju.selab.autochecker.Checker;
 import edu.nju.selab.autochecker.Comparison;
+import edu.nju.selab.handler.FrontHandler;
 import org.jetbrains.annotations.Unmodifiable;
 import edu.nju.selab.writer.ComparisonWriter;
 import edu.nju.selab.writer.ComparisonWriterType;
@@ -63,9 +64,8 @@ public class Controller {
      * uses the options passed in the constructor.
      * after options are parsed, the program will run.
      */
-    public void run() {
+    public List<Comparison> run() {
         var inputDir = _options.inputDir();
-        var outputDir = _options.outputDir();
         var inputPath = Path.of(inputDir);
         List<Comparison> cmpResults;
         try (var stream = Files.walk(inputPath)) {
@@ -77,10 +77,17 @@ public class Controller {
             }
         } catch (IOException e) {
             System.err.println(inputDir + ": Error when reading input directory");
-            return;
+            return List.of();
         }
-        // write results to output directory
-        var writer = ComparisonWriter.fromOutDir(outputDir, ComparisonWriterType.CSV_PAIR);
+        return cmpResults;
+    }
+
+    /**
+     * Write the results to the output directory.
+     * @param cmpResults the results to write.
+     */
+    public void writeResults(List<Comparison> cmpResults) {
+        var writer = ComparisonWriter.fromOutDir(_options.outputDir(), ComparisonWriterType.CSV_PAIR);
         writer.write(cmpResults);
     }
 }

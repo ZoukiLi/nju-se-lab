@@ -4,11 +4,13 @@ import edu.nju.selab.autochecker.test.TestBatch;
 import edu.nju.selab.autochecker.test.TestResult;
 import edu.nju.selab.autochecker.test.TestRunningRecord;
 import edu.nju.selab.src_reader.SrcReader;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**
@@ -67,6 +69,18 @@ public class Program {
     }
 
     /**
+     * get the src file content.
+     * @return the src file content.
+     */
+    public String read() {
+        try {
+            return this.srcReader.read();
+        } catch (IOException e) {
+            return "Error when reading src file: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace());
+        }
+    }
+
+    /**
      * Run the program with the given test.
      * @param testBatch the test to run.
      * @param timeout the timeout for the test, in milliseconds.
@@ -105,7 +119,11 @@ public class Program {
      * @param other the test result to compare with.
      * @return CompareResult of the comparison.
      */
-    public ComparisonResult compare(Program other) {
+    public ComparisonResult compare(@NotNull Program other) {
+        // only when two programs are the same can they be asserted to be the same by autochecker
+        if (this.read().equals(other.read())) {
+            return ComparisonResult.SAME;
+        }
         if (!this._hasCompiled || !other._hasCompiled) {
             return ComparisonResult.UNKNOWN;
         }
@@ -116,10 +134,19 @@ public class Program {
             return ComparisonResult.UNKNOWN;
         }
 
+        // test can only tell difference.
         var r1 = this._testResult.results();
         var r2 = other._testResult.results();
         return IntStream.range(0, r1.size())
                 .mapToObj(i -> r1.get(i).CompareTo(r2.get(i)))
-                .reduce(true, (a, b) -> a && b) ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
+                .reduce(true, (a, b) -> a && b) ? ComparisonResult.UNKNOWN : ComparisonResult.DIFFERENT;
+    }
+
+    /**
+     * get the test result of the program.
+     * @return the test result of the program.
+     */
+    public TestResult testResult() {
+        return this._testResult;
     }
 }
