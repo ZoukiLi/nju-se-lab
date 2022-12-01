@@ -54,6 +54,7 @@ public class CSVPairWriter extends ComparisonWriter {
             Files.createDirectories(_out_dir);
             Files.deleteIfExists(eq_path);
             Files.deleteIfExists(ineq_path);
+            Files.deleteIfExists(unk_path);
             Files.writeString(eq_path, equal, StandardOpenOption.CREATE);
             Files.writeString(ineq_path, inequal, StandardOpenOption.CREATE);
             Files.writeString(unk_path, unknown, StandardOpenOption.CREATE);
