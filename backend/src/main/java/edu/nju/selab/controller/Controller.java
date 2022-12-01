@@ -66,7 +66,6 @@ public class Controller {
      */
     public List<Comparison> run() {
         var inputDir = _options.inputDir();
-        var outputDir = _options.outputDir();
         var inputPath = Path.of(inputDir);
         List<Comparison> cmpResults;
         try (var stream = Files.walk(inputPath)) {
@@ -80,10 +79,15 @@ public class Controller {
             System.err.println(inputDir + ": Error when reading input directory");
             return List.of();
         }
-        // write results to output directory
-        var writer = ComparisonWriter.fromOutDir(outputDir, ComparisonWriterType.CSV_PAIR);
-        writer.write(cmpResults);
-
         return cmpResults;
+    }
+
+    /**
+     * Write the results to the output directory.
+     * @param cmpResults the results to write.
+     */
+    public void writeResults(List<Comparison> cmpResults) {
+        var writer = ComparisonWriter.fromOutDir(_options.outputDir(), ComparisonWriterType.CSV_PAIR);
+        writer.write(cmpResults);
     }
 }
