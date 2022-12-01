@@ -21,4 +21,18 @@ public record Comparison (Program program1, Program program2, ComparisonResult r
     public boolean isSame() {
         return result == ComparisonResult.SAME;
     }
+
+    /**
+     * @return is DIFFERENT.
+     */
+    public boolean isDifferent() {
+        return result == ComparisonResult.DIFFERENT;
+    }
+
+    /**
+     * @return is UNKNOWN.
+     */
+    public boolean isUnknown() {
+        return result == ComparisonResult.UNKNOWN;
+    }
 }

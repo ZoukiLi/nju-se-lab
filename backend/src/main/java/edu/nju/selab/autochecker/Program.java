@@ -4,6 +4,7 @@ import edu.nju.selab.autochecker.test.TestBatch;
 import edu.nju.selab.autochecker.test.TestResult;
 import edu.nju.selab.autochecker.test.TestRunningRecord;
 import edu.nju.selab.src_reader.SrcReader;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -118,7 +119,11 @@ public class Program {
      * @param other the test result to compare with.
      * @return CompareResult of the comparison.
      */
-    public ComparisonResult compare(Program other) {
+    public ComparisonResult compare(@NotNull Program other) {
+        // only when two programs are the same can they be asserted to be the same by autochecker
+        if (this.read().equals(other.read())) {
+            return ComparisonResult.SAME;
+        }
         if (!this._hasCompiled || !other._hasCompiled) {
             return ComparisonResult.UNKNOWN;
         }
@@ -129,11 +134,12 @@ public class Program {
             return ComparisonResult.UNKNOWN;
         }
 
+        // test can only tell difference.
         var r1 = this._testResult.results();
         var r2 = other._testResult.results();
         return IntStream.range(0, r1.size())
                 .mapToObj(i -> r1.get(i).CompareTo(r2.get(i)))
-                .reduce(true, (a, b) -> a && b) ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
+                .reduce(true, (a, b) -> a && b) ? ComparisonResult.UNKNOWN : ComparisonResult.DIFFERENT;
     }
 
     /**
