@@ -26,7 +26,7 @@ public class FrontHandler {
     private int _index = 0;
 
     @PostMapping(value = "/api/nextComparison", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public FrontComparisonRecord nextComparison(@RequestBody Map<String, String> body) {
+    public FrontComparisonRecord nextComparison(@RequestBody @NotNull Map<String, String> body) {
         body.forEach((k, v) -> {
             System.out.println(k + " " + v);
         });

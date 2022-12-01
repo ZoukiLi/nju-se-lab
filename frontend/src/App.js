@@ -12,6 +12,9 @@ export default class App extends React.Component {
             newString: "",
             leftCaption: "",
             rightCaption: "",
+            testCases: [],
+            leftResults: [],
+            rightResults: [],
         };
     }
 
@@ -32,12 +35,15 @@ export default class App extends React.Component {
             newString: json.rightContent,
             leftCaption: json.leftCaption,
             rightCaption: json.rightCaption,
+            testCases: json.testCases,
+            leftResults: json.leftResults,
+            rightResults: json.rightResults
         });
     }
 
     render() {
         const Button = Styled.button`
-        background-color: #4CAF50; /* Green */
+        background-color: ${props => props.color};
         border: none;
         color: white;
         padding: 15px 32px;
@@ -72,8 +78,10 @@ export default class App extends React.Component {
                         <p>
                             Click the button below to start the comparison.
                         </p>
-                        <Button
-                            onClick={() => this.setState({ start: true })}
+                        <Button color="green"
+                            onClick={() => this.clickHandler("start").then(
+                                () => this.setState({ start: true })
+                            )}
                         >
                             Start
                         </Button>
@@ -84,17 +92,17 @@ export default class App extends React.Component {
         return (
             <div className="App">
                 <div>
-                    <Button
+                    <Button color="green"
                         manualResult="same"
                         onClick={()=>this.clickHandler("same")}>
                         Same
                     </Button>
-                    <Button
+                    <Button color="red"
                         manualResult="different"
                         onClick={()=>this.clickHandler("different")}>
                         Different
                     </Button>
-                    <Button
+                    <Button color="brown"
                         manualResult="notSure"
                         onClick={()=>this.clickHandler("notSure")}>
                         Not Sure
@@ -108,6 +116,35 @@ export default class App extends React.Component {
                     leftTitle={this.state.leftCaption}
                     rightTitle={this.state.rightCaption}
                 />
+
+                <p>
+                    <b>Total {this.state.testCases.length} Test Cases:</b>
+                </p>
+
+                <div>
+                    {this.state.testCases.map((testCase, index) => (
+                        <ReactDiffViewer
+                            oldValue={
+                            `
+stdout: ${this.state.leftResults[index].stdout}\n
+stderr: ${this.state.leftResults[index].stderr}\n
+${this.state.leftResults[index].timeout ? "timeout" : ""}
+                            `
+                            }
+                            newValue={
+                            `
+stdout: ${this.state.rightResults[index].stdout}\n
+stderr: ${this.state.rightResults[index].stderr}\n
+${this.state.rightResults[index].timeout ? "timeout" : ""}
+                            `
+                            }
+                            splitView={true}
+                            compareMethod={DiffMethod.WORDS}
+                            leftTitle={`test case${index}: ${testCase}`}
+                            rightTitle={""}
+                        />
+                    ))}
+                </div>
             </div>
         );
     }

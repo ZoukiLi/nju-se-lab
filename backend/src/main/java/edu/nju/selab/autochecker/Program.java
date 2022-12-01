@@ -135,4 +135,12 @@ public class Program {
                 .mapToObj(i -> r1.get(i).CompareTo(r2.get(i)))
                 .reduce(true, (a, b) -> a && b) ? ComparisonResult.SAME : ComparisonResult.DIFFERENT;
     }
+
+    /**
+     * get the test result of the program.
+     * @return the test result of the program.
+     */
+    public TestResult testResult() {
+        return this._testResult;
+    }
 }
