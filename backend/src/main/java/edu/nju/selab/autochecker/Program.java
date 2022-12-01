@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**
@@ -70,8 +71,12 @@ public class Program {
      * get the src file content.
      * @return the src file content.
      */
-    public String read() throws IOException {
-        return this.srcReader.read();
+    public String read() {
+        try {
+            return this.srcReader.read();
+        } catch (IOException e) {
+            return "Error when reading src file: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace());
+        }
     }
 
     /**

@@ -3,20 +3,22 @@ package edu.nju.selab.handler;
 import edu.nju.selab.autochecker.Comparison;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.util.Optional;
 
 public record FrontComparisonRecord(
-        String leftTitle,
+        String leftCaption,
         String leftContent,
-        String rightTitle,
-        String rightContent
+        String rightCaption,
+        String rightContent,
+        boolean end
 ) {
-    public FrontComparisonRecord(@NotNull Comparison comparison) throws IOException {
+    public FrontComparisonRecord(@NotNull Optional<Comparison> comparison) {
         this(
-                comparison.program1().getPath(),
-                comparison.program1().read(),
-                comparison.program2().getPath(),
-                comparison.program2().read()
+                comparison.map(c -> c.program1().getPath()).orElse(""),
+                comparison.map(c -> c.program1().read()).orElse(""),
+                comparison.map(c -> c.program2().getPath()).orElse(""),
+                comparison.map(c -> c.program2().read()).orElse(""),
+                comparison.isEmpty()
         );
     }
 }

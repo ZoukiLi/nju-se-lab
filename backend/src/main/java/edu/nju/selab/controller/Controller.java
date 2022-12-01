@@ -64,7 +64,7 @@ public class Controller {
      * uses the options passed in the constructor.
      * after options are parsed, the program will run.
      */
-    public void run() {
+    public List<Comparison> run() {
         var inputDir = _options.inputDir();
         var outputDir = _options.outputDir();
         var inputPath = Path.of(inputDir);
@@ -78,13 +78,12 @@ public class Controller {
             }
         } catch (IOException e) {
             System.err.println(inputDir + ": Error when reading input directory");
-            return;
+            return List.of();
         }
         // write results to output directory
         var writer = ComparisonWriter.fromOutDir(outputDir, ComparisonWriterType.CSV_PAIR);
         writer.write(cmpResults);
 
-        // start web server
-        var handler = new FrontHandler(cmpResults);
+        return cmpResults;
     }
 }
